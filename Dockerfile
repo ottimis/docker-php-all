@@ -4,7 +4,11 @@ RUN apt-get update -y \
     && apt-get install -y \
     libxml2-dev \
     libpng-dev \
+    libjpeg-dev \
     libzip-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libgd-dev \
     gnupg2 zip \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && curl https://packages.microsoft.com/config/debian/9/prod.list \
@@ -20,6 +24,7 @@ RUN apt-get update -y \
     msodbcsql17 \
     && apt-get clean -y \
     && docker-php-ext-install dom \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include \
     && docker-php-ext-install gd \
     && docker-php-ext-install zip \
     && docker-php-ext-configure soap --enable-soap \
