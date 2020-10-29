@@ -1,7 +1,8 @@
-FROM ottimis/php_mysql:latest
+FROM php:7.4-apache
 ENV ACCEPT_EULA=Y
+ENV TZ=Europe/Rome
 RUN apt-get update -y \
-    && apt-get install -y \
+    && apt-get install --no-install-recommends -y \
     libxml2-dev \
     libpng-dev \
     libjpeg-dev \
@@ -22,13 +23,20 @@ RUN apt-get update -y \
     && apt-get -y --no-install-recommends install \
     unixodbc-dev \
     msodbcsql17 \
+    && rm -rf /var/lib/apt/lists/* \
     && apt-get clean -y \
+    && docker-php-ext-install mysqli \
     && docker-php-ext-install dom \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include \
     && docker-php-ext-install gd \
     && docker-php-ext-install zip \
     && docker-php-ext-configure soap --enable-soap \
-    && docker-php-ext-install soap
+    && docker-php-ext-install soap \
+    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --install-dir=/bin --filename=composer \
+    && printf '[PHP]\ndate.timezone = "Europe/Rome"\n' > /usr/local/etc/php/conf.d/tzone.ini \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && a2enmod rewrite
 
 RUN docker-php-ext-install mbstring pdo pdo_mysql \
     && pecl install sqlsrv pdo_sqlsrv xdebug \
