@@ -38,6 +38,6 @@ RUN apt-get update -y \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && a2enmod rewrite
 
-RUN docker-php-ext-install mbstring pdo pdo_mysql \
+RUN docker-php-ext-install pdo pdo_mysql \
     && pecl install sqlsrv pdo_sqlsrv xdebug \
     && docker-php-ext-enable sqlsrv pdo_sqlsrv xdebug
