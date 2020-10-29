@@ -27,7 +27,7 @@ RUN apt-get update -y \
     && apt-get clean -y \
     && docker-php-ext-install mysqli \
     && docker-php-ext-install dom \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
     && docker-php-ext-install zip \
     && docker-php-ext-configure soap --enable-soap \
