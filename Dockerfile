@@ -1,6 +1,8 @@
 FROM php:7.4-apache
 ENV ACCEPT_EULA=Y
 ENV TZ=Europe/Rome
+ENV APACHE_DOCUMENT_ROOT /var/www/html
+
 RUN apt-get update -y \
     && apt-get install --no-install-recommends -y \
     libxml2-dev \
@@ -36,7 +38,9 @@ RUN apt-get update -y \
     && php composer-setup.php --install-dir=/bin --filename=composer \
     && printf '[PHP]\ndate.timezone = "Europe/Rome"\n' > /usr/local/etc/php/conf.d/tzone.ini \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-    && a2enmod rewrite
+    && a2enmod rewrite \
+    && sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
+    && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 RUN docker-php-ext-install pdo pdo_mysql \
     && pecl install sqlsrv pdo_sqlsrv xdebug \
