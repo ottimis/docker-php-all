@@ -13,6 +13,7 @@ RUN apt-get update -y \
     libjpeg62-turbo-dev \
     libgd-dev \
     libpq-dev \
+    libldap2-dev \
     gnupg2 zip \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && curl https://packages.microsoft.com/config/debian/9/prod.list \
@@ -30,7 +31,8 @@ RUN apt-get update -y \
     && apt-get clean -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure soap --enable-soap \
-    && docker-php-ext-install pdo pdo_mysql mysqli dom gd zip soap pdo_pgsql\
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+    && docker-php-ext-install pdo pdo_mysql mysqli dom gd zip soap pdo_pgsql ldap \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/bin --filename=composer \
     && printf '[PHP]\ndate.timezone = "Europe/Rome"\n' > /usr/local/etc/php/conf.d/tzone.ini \
